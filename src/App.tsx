@@ -1,28 +1,28 @@
-import React, { useState } from 'react';
-import './App.css';
-import Navbar from './Components/Navbar/Navbar';
-import Sidebar from './Sidebar/Sidebar';
-import Login from '../src/Components/Navbar/Login';
+import { useSelector } from "react-redux";
+import "./App.css";
+import Navbar from "./Components/Navbar/Navbar";
+import Sidebar from "./Sidebar/Sidebar";
+import Login from "../src/Components/Navbar/Login";
+import { AuthState } from "./Actions/authTypes";
 
 function App() {
-  // State to track login status
-  const [isLoggedIn, setLoggedIn] = useState(false);
+  // Create Redux store
 
-  // Function to handle successful login
-  const handleLoginSuccess = () => {
-    setLoggedIn(true);
-  };
+  // Use useSelector to get the isAuthenticated status from the Redux store
+  const isAuthenticated = useSelector(
+    (state: { auth: AuthState }) => state.auth.isAuthenticated
+  );
 
   return (
     <>
-      {/* Conditionally render Login or Navbar and Sidebar based on login status */}
-      {!isLoggedIn ? (
-        <Login onLoginSuccess={handleLoginSuccess} />
-      ) : (
+      {" "}
+      {isAuthenticated ? (
         <div>
           <Navbar />
           <Sidebar />
         </div>
+      ) : (
+        <Login />
       )}
     </>
   );

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
 import Innovatech_bg from '../../assets/Innovatech-bg.jpg'
+import { useDispatch } from 'react-redux';
+import {login} from '../../Actions/authActions'
 
 
-interface LoginProps {
-  onLoginSuccess: () => void;
-}
 
-const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
+const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch();
   
 
   const onFinish = (values: any) => {
@@ -20,8 +20,8 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     if (values.username === storedUsername && values.password === storedPassword) {
       console.log('Login successful!');
       setError(null);
+      dispatch(login());
       // If login is successful, trigger the onLoginSuccess callback
-      onLoginSuccess();
     } else {
       console.log('Login failed!');
       setError('Invalid username or password');
