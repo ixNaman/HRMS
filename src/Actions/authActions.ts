@@ -8,3 +8,5 @@ export const login = (): AuthAction => ({
 export const logout = (): AuthAction => ({
   type: 'LOGOUT',
 });
+
+

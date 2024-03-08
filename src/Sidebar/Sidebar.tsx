@@ -2,6 +2,7 @@ import * as React from "react";
 import { Layout, Menu } from "antd";
 import {MenuOutlined, CloseOutlined,HomeOutlined,CheckSquareOutlined,CarryOutOutlined,FileOutlined,CalendarOutlined,BookOutlined,BarChartOutlined} from "@ant-design/icons";
 import "./Sidebar.css";
+import { Link } from "react-router-dom";
 
 interface SidebarState {
   collapsed: boolean;
@@ -42,31 +43,31 @@ class Sidebar extends React.Component<unknown, SidebarState> {
           {/* Home Button */}
           <Menu.Item key="1">
             <HomeOutlined />
-            <span className="nav-text">Home</span>
+            <Link to="/Home" ></Link>
+            <span className="nav-text">   Home</span>
           </Menu.Item>
 
           {/* Other Menu Items */}
           <Menu.Item key="2">
             <CheckSquareOutlined />
-            <span className="nav-text">Employees</span>
+            <Link to="/EmployeeManagement" ></Link>
+            <span className="nav-text">  Employees</span>
           </Menu.Item>
           <Menu.Item key="3">
             <CarryOutOutlined  />
             <span className="nav-text">Leave Management </span>
           </Menu.Item>
           <Menu.Item key="4">
-            <FileOutlined />
-            <span className="nav-text"> Onboarding </span>
+            <CalendarOutlined   />
+            <Link to="/AttendanceTracking" ></Link>
+            <span className="nav-text">  Attendance Tracking </span>
           </Menu.Item>
           <Menu.Item key="5">
-            <CalendarOutlined   />
-            <span className="nav-text">Attendance Tracking </span>
+            <BookOutlined  />
+            <Link to="/TaskManagement" ></Link>
+            <span className="nav-text"> Task Management </span>
           </Menu.Item>
           <Menu.Item key="6">
-            <BookOutlined  />
-            <span className="nav-text">Task Management </span>
-          </Menu.Item>
-          <Menu.Item key="7">
             <BarChartOutlined  />
             <span className="nav-text">Performance Review </span>
           </Menu.Item>
