@@ -18,6 +18,8 @@ import Meta from "antd/es/card/Meta";
 import { UserAddOutlined } from "@ant-design/icons";
 import FormItem from "antd/es/form/FormItem";
 import { RadioGroup } from "@headlessui/react";
+import { useSelector } from "react-redux";
+import { AuthState } from "../../Actions/authTypes";
 
 const { Option } = Select;
 
@@ -55,6 +57,15 @@ const EmployeeManagement = (props: Props) => {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [selectedEmployeeIndex, setSelectedEmployeeIndex] = useState<number | null>(null);
   const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+  const userRole = useSelector(
+    (state: { auth: AuthState }) => state.auth.role
+  );
+  // if (userRole != "Admin" ) {
+  //   return (
+  //     <><h1>you don't have authorised access</h1>
+  //     </>
+  //   );
+  // }
 
   useEffect(() => {
     // Load employees from local storage on component mount
@@ -157,47 +168,53 @@ const EmployeeManagement = (props: Props) => {
     setIsUpdateModalVisible(true);
   }
   const handleUpdateOk = () => {
-    form.validateFields().then((values) => {
-      const updatedEmployee: Employee = {
-        ...selectedEmployee!,
-        name: values.name,
-        position: values.position,
-        age: values.age,
-        birthdate: values.birthdate,
-        skills: values.skills,
-        companyId: values.companyId,
-        password: values.password,
-        phoneNumber: values.phoneNumber,
-        role: values.role,
-      };
-
-      const updatedEmployees = [...employees];
-      updatedEmployees[selectedEmployeeIndex!] = updatedEmployee;
-
-      setEmployees(updatedEmployees);
-      setFilteredEmployees(updatedEmployees);
-
-      // Update the employee in local storage
-      const storedEmployees = JSON.parse(localStorage.getItem("employees") || "[]");
-      storedEmployees[selectedEmployeeIndex!] = {
-        name: updatedEmployee.name,
-        position: updatedEmployee.position,
-        age: updatedEmployee.age,
-        birthdate: updatedEmployee.birthdate,
-        skills: updatedEmployee.skills,
-        companyId: updatedEmployee.companyId,
-        phoneNumber: updatedEmployee.phoneNumber,
-        project: updatedEmployee.project,
-        role: updatedEmployee.role,
-      };
-      localStorage.setItem("employees", JSON.stringify(storedEmployees));
-
-      message.success("Employee updated successfully!");
-      form.resetFields();
-      setIsUpdateModalVisible(false);
-    });
+    form
+      .validateFields()
+      .then((values) => {
+        if (selectedEmployee) {
+          const updatedEmployee: Employee = {
+            ...selectedEmployee,
+            name: values.name,
+            position: values.position,
+            age: values.age,
+            birthdate: moment(values.birthdate).format("YYYY-MM-DD"), // Validate and format the date
+            skills: values.skills,
+            companyId: values.companyId,
+            password: values.password,
+            phoneNumber: values.phoneNumber,
+            role: values.role,
+          };
+  
+          const updatedEmployees = [...employees];
+          updatedEmployees[selectedEmployeeIndex!] = updatedEmployee;
+  
+          setEmployees(updatedEmployees);
+          setFilteredEmployees(updatedEmployees);
+  
+          // Update the employee in local storage
+          const storedEmployees = JSON.parse(localStorage.getItem("employees") || "[]");
+          storedEmployees[selectedEmployeeIndex!] = {
+            name: updatedEmployee.name,
+            position: updatedEmployee.position,
+            age: updatedEmployee.age,
+            birthdate: updatedEmployee.birthdate,
+            skills: updatedEmployee.skills,
+            companyId: updatedEmployee.companyId,
+            phoneNumber: updatedEmployee.phoneNumber,
+            project: updatedEmployee.project,
+            role: updatedEmployee.role,
+          };
+          localStorage.setItem("employees", JSON.stringify(storedEmployees));
+  
+          message.success("Employee updated successfully!");
+          form.resetFields();
+          setIsUpdateModalVisible(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Validation failed:", error);
+      });
   };
-
   const handleUpdateCancel = () => {
     form.resetFields();
     setIsUpdateModalVisible(false);
@@ -255,6 +272,7 @@ const EmployeeManagement = (props: Props) => {
               </Select.Option>
             ))}
           </Select>
+          {userRole === "Admin" && (
           <Button
             type="primary"
             ghost
@@ -264,13 +282,14 @@ const EmployeeManagement = (props: Props) => {
             {" "}
             <UserAddOutlined /> Add Employee
           </Button>
+          )}
         </div>
       </div>
       <div>
         
         {filteredEmployees.map((employee) => (
-          <Card key={`employee-${employee.id}`} style={{ margin: "0.5rem" }}>
-            <div className="flex flex-row justify-between items-center">
+          <Card key={`employee-${employee.id}`} style={{ margin: "0.5rem" }} className="bg-gradient-to-r from-cyan-200  to-gray-200">
+            <div className="flex flex-row justify-between items-center ">
               <div>
                 <Meta
                   title={employee.name}
@@ -288,20 +307,24 @@ const EmployeeManagement = (props: Props) => {
                   >
                     View profile
                   </Button>
-                  <Button
-                    type="primary"
-                    ghost
-                    onClick={() => updateEmployee(employee)}
-                  >
-                    Update
-                  </Button>
-                  <Button
-                    danger
-                    onClick={() => removeEmployee(employee.companyId)}
-                    className="ml-2"
-                  >
-                    Remove
-                  </Button>
+                  {userRole === "Admin" && (
+                    <>
+                      <Button
+                        type="primary"
+                        ghost
+                        onClick={() => updateEmployee(employee)}
+                      >
+                        Update
+                      </Button>
+                      <Button
+                        danger
+                        onClick={() => removeEmployee(employee.companyId)}
+                        className="ml-2"
+                      >
+                        Remove
+                      </Button>
+                    </>
+                  )}
                 </Space>
               </div>
             </div>

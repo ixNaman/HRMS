@@ -22,6 +22,7 @@ export default class DemoApp extends React.Component<{}, DemoAppState> {
   state: DemoAppState = {
     weekendsVisible: true,
     currentEvents: [],
+    
   };
 
   render() {

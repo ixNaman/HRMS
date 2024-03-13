@@ -10,11 +10,19 @@ import TaskManagement from "./Components/Admin/TaskManagement";
 import AttendanceTracking from "./Components/Admin/AttendanceTracking";
 import EmployeeManagement from "./Components/Admin/EmployeeManagement";
 import CalendarEvents from "./Components/Admin/CalendarEvents";
+import AdminProfile from "./Components/Admin/Adminprofile";
+import ProjectManagement from "./Components/Admin/ProjectManagement";
+import EmployeeDashboard from "./Components/Employee/EmployeeDashboard";
+import EmployeeAttendance from "./Components/Employee/EmployeeAttendance";
+import LeaveForm from "./Components/Employee/Leave";
+import EmployeeTasks from "./Components/Employee/EmployeeTasks";
+import LeaveManagement from "./Components/Admin/LeaveManagement";
 
 function App() {
   const isAuthenticated = useSelector(
     (state: { auth: AuthState }) => state.auth.isAuthenticated
   );
+  const userRole = useSelector((state: { auth: AuthState }) => state.auth.role);
 
   return (
     <>
@@ -26,32 +34,74 @@ function App() {
             <Navbar />
             <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200">
               <Routes>
-                <Route path="/AdminDashboard" element={<AdminDashboard />} />
-                <Route path="/TaskManagement" element={<TaskManagement />} />
-                <Route
-                  path="/AttendanceTracking"
-                  element={<AttendanceTracking />}
-                />
+                {userRole === "Admin" && (
+                  <>
+                    <Route path="/" element={<AdminDashboard />} />
+                    <Route
+                      path="/AdminDashboard"
+                      element={<AdminDashboard />}
+                    />
+                    <Route
+                      path="/TaskManagement"
+                      element={<TaskManagement />}
+                    />
+                    <Route
+                      path="/AttendanceTracking"
+                      element={<AttendanceTracking />}
+                    />
+                     <Route
+                      path="/EmployeeManagement"
+                      element={<EmployeeManagement />}
+                    />
+                    <Route
+                      path="/CalendarEvents"
+                      element={<CalendarEvents />}
+                    />
+                    <Route
+                      path="/LeaveManagement"
+                      element={<LeaveManagement />}
+                    />
+                    <Route path="/AdminProfile" element={<AdminProfile />} />
+                    <Route
+                      path="/ProjectManagement"
+                      element={<ProjectManagement />}
+                    />
+                    <Route path="*" element={<AdminDashboard/>}/>
+                  </>
+                )}
+                {userRole === "Employee" && (
+                  <>
+                    {/* <EmployeeDashboard/> */}
+                    <Route
+                      path="/EmployeeDashboard"
+                      element={<EmployeeDashboard />}
+                    />
+                    <Route
+                      path="/LeaveForm"
+                      element={<LeaveForm  />}
+                    />
+                    <Route
+                      path="/EmployeeManagement"
+                      element={<EmployeeManagement />}
+                    />
+                    <Route
+                      path="/EmployeeAttendance"
+                      element={<EmployeeAttendance />}
+                    />
+                    <Route
+                    path="/EmployeeTasks" element={<EmployeeTasks/>}/>
+                  </>
+                )}
+                <Route path="/" element={<AdminDashboard />} />
                 <Route path="/Home" element={<AdminDashboard />} />
-                <Route
-                  path="/EmployeeManagement"
-                  element={<EmployeeManagement />}
-                />
-                <Route path="/CalendarEvents" element={<CalendarEvents />} />
-
-                {/* Add more routes as needed */}
               </Routes>
             </main>
           </div>
         </div>
       ) : (
         <Login />
-        // <Routes>
-        //   <Route path="/l" element={<Login/>}/>
-        // </Routes>
       )}
     </>
   );
 }
-
 export default App;

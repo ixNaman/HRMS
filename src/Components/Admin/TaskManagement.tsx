@@ -5,6 +5,7 @@ import { Card, Modal, Button, Input, Select, Space, Collapse } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import "antd/dist/reset.css";
 
+
 interface Task {
   id: number;
   title: string;
@@ -23,7 +24,7 @@ interface Props {
   currentUser: User;
 }
 
-const TaskManagementSystem: React.FC<Props> = ({ currentUser }) => {
+const TaskManagementSystem: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [employees, setEmployees] = useState<string[]>([]);
   const [newTask, setNewTask] = useState<Task>({
@@ -123,7 +124,7 @@ const TaskManagementSystem: React.FC<Props> = ({ currentUser }) => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex justify-center mb-4">
+      <div className="flex justify-center mb-4 ">
         <Space>
           <Input
             placeholder="Search tasks"
@@ -139,12 +140,13 @@ const TaskManagementSystem: React.FC<Props> = ({ currentUser }) => {
         <Collapse accordion>
           {filteredTasks.map((task) => (
             <Collapse.Panel
-              header= {<div className="text-white">{task.title}</div>}
+              header= {<div className="text-black">{task.title}</div>}
               key={task.id.toString()}
-              style={{backgroundColor:"#213d67"}}
+              style={{backgroundColor:""}}
+              className="bg-gradient-to-r from-blue-300 to-gray-200"
               extra={
                 <Space>
-                  <Button onClick={() => updateTask(task)} type="default" className="text-blue-200" >
+                  <Button onClick={() => updateTask(task)} type="default" className="text-green-900" >
                     <EditOutlined />
                     Update
                   </Button>
