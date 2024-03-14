@@ -16,7 +16,7 @@ interface NavigationItem {
 
 const navigation: NavigationItem[] = [
   { name: "Dashboard", href: "/Dashboard", current: true },
-  { name: "Team", href: "/team", current: false },
+  { name: "Team", href: "/EmployeeProfile", current: false },
   { name: "Projects", href: "/ProjectManagement", current: false },
   { name: "Calendar", href: "/CalendarEvents", current: false },
 ];
@@ -95,9 +95,9 @@ export default function Example() {
                 </button>
 
                 {/* Profile dropdown */}
-                <Menu as="div" className="relative ml-3">
+                <Menu as="div" className="relative ml-3 ">
                   <div>
-                    <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                    <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 hover:animate-pulse ">
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
                       <CiUser style={{ color: "White", fontSize: "20px" }} />

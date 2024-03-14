@@ -14,9 +14,30 @@ const Login: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Hook for navigation
 
+  // const existingUsers = localStorage.getItem("users");
+  
+  // // Parse existing user data or initialize an empty array
+  // const usersArray = existingUsers ? JSON.parse(existingUsers) : [];
+  
+  // // New user to be added
+  // const newUser = {
+  //   username: "Naman",
+  //   password: "Naman",
+  //   role: "Admin" // Adjust the role as needed
+  // };
+  
+  // // Add the new user to the array
+  // usersArray.push(newUser);
+  
+  // // Convert the array to a JSON string
+  // const updatedUsersString = JSON.stringify(usersArray);
+  
+  // // Store the updated string in localStorage with the key "users"
+  // localStorage.setItem("users", updatedUsersString);
 
   const onFinish = (values: any) => {
     const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+    console.log(storedUsers)
     const user = storedUsers.find(
       (u: any) =>
         u.username === values.username && u.password === values.password
@@ -106,9 +127,10 @@ const Login: React.FC = () => {
             <Button
               type="primary"
               htmlType="submit"
-              className="w-full bg-blue-500 text-white rounded py-2"
+              className="w-full bg-blue-500 text-white rounded py-2 "
+              onClick={onFinish}
             >
-              Sign In
+              <div className="animate-bounce">Sign In</div>
             </Button>
           </Form.Item>
 

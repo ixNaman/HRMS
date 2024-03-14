@@ -171,13 +171,13 @@ const EmployeeManagement = (props: Props) => {
     form
       .validateFields()
       .then((values) => {
-        if (selectedEmployee) {
-          const updatedEmployee: Employee = {
+        if (selectedEmployee && selectedEmployeeIndex !== null) {
+          const updatedEmployee = {
             ...selectedEmployee,
             name: values.name,
             position: values.position,
             age: values.age,
-            birthdate: moment(values.birthdate).format("YYYY-MM-DD"), // Validate and format the date
+            birthdate: moment(values.birthdate).format("YYYY-MM-DD"),
             skills: values.skills,
             companyId: values.companyId,
             password: values.password,
@@ -186,25 +186,24 @@ const EmployeeManagement = (props: Props) => {
           };
   
           const updatedEmployees = [...employees];
-          updatedEmployees[selectedEmployeeIndex!] = updatedEmployee;
+          updatedEmployees[selectedEmployeeIndex] = updatedEmployee;
   
           setEmployees(updatedEmployees);
           setFilteredEmployees(updatedEmployees);
   
-          // Update the employee in local storage
           const storedEmployees = JSON.parse(localStorage.getItem("employees") || "[]");
-          storedEmployees[selectedEmployeeIndex!] = {
-            name: updatedEmployee.name,
-            position: updatedEmployee.position,
-            age: updatedEmployee.age,
-            birthdate: updatedEmployee.birthdate,
-            skills: updatedEmployee.skills,
-            companyId: updatedEmployee.companyId,
-            phoneNumber: updatedEmployee.phoneNumber,
-            project: updatedEmployee.project,
-            role: updatedEmployee.role,
-          };
+          storedEmployees[selectedEmployeeIndex] = updatedEmployee;
           localStorage.setItem("employees", JSON.stringify(storedEmployees));
+  
+          // Update user role in local storage
+          const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+          const updatedUsers = storedUsers.map((user) => {
+            if (user.username === updatedEmployee.name) {
+              return { ...user, role: values.role };
+            }
+            return user;
+          });
+          localStorage.setItem("users", JSON.stringify(updatedUsers));
   
           message.success("Employee updated successfully!");
           form.resetFields();
@@ -215,6 +214,8 @@ const EmployeeManagement = (props: Props) => {
         console.error("Validation failed:", error);
       });
   };
+  
+  
   const handleUpdateCancel = () => {
     form.resetFields();
     setIsUpdateModalVisible(false);
@@ -240,7 +241,7 @@ const EmployeeManagement = (props: Props) => {
     localStorage.setItem("employees", JSON.stringify(updatedStoredEmployees));
 
     const storedUsers = localStorage.getItem("users");
-    let loginDetails: Userinfo[] = JSON.parse(storedUsers);
+    let loginDetails: Userinfo[] = JSON.parse(storedUsers ||"[]");
 
     const updatedUsers = loginDetails.filter(
       (loginDetail: Userinfo) => loginDetail.username !== companyId
