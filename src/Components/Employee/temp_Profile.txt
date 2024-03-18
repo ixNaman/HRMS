@@ -1,0 +1,332 @@
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { AuthState } from "../../Actions/authTypes";
+import { Upload, Button, Card } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { ToastContainer, toast } from "react-toastify";
+
+const qwerty: React.FC = () => {
+  const username = useSelector(
+    (state: { auth: AuthState }) => state.auth.username
+  );
+
+  const [employee, setEmployee] = useState<any>(null); // State to manage employee data
+  const [newPhoto, setNewPhoto] = useState<string | null>(null); // State to manage the new photo
+
+  // Function to handle photo change
+  const handlePhotoChange = (info: any) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewPhoto(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Load employee data from localStorage
+  const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
+
+  // Find employee by username
+  const currentEmployee = employeeData.find(
+    (emp: { name: string }) => emp.name === username
+  );
+
+  // Update employee state when it's found
+  if (currentEmployee && !employee) {
+    setEmployee(currentEmployee);
+  }
+
+  // Function to save changes
+  const saveChanges = () => {
+    if (employee && newPhoto) {
+      const updatedEmployee = { ...employee, photo: newPhoto };
+      // Update employee in localStorage
+      const updatedEmployees = employeeData.map((emp: any) => {
+        if (emp.name === username) {
+          return updatedEmployee;
+        }
+        return emp;
+      });
+      localStorage.setItem("employees", JSON.stringify(updatedEmployees));
+      // Update state
+      setEmployee(updatedEmployee);
+      setNewPhoto(null);
+      toast.success("Profile Updated Successfully")
+    } else{
+      toast.error("Something went wrong")
+    }
+  };
+
+  return (
+    <div className="bg-white w-full flex flex-col gap-5 px-3 md:px-16 lg:px-28 md:flex-row text-[#161931]">
+      {/* Sidebar */}
+      <aside className="py-4 md:w-1/3 lg:w-1/4 md:block">
+      {/* Mini Card Profile */}
+      <Card className="h-full w-full">
+      {employee && (
+        <div className="p-4 bg-gray-100 rounded-lg">
+          <img
+            className="object-cover w-32 h-32 rounded-full"
+            src={newPhoto || employee.photo}
+            alt="Profile Picture"
+          />
+          <div className="mt-4">
+            <h3 className="text-lg font-semibold">{employee.name} {employee.lastName}</h3>
+            <p className="text-sm text-gray-600">{employee.position}</p>
+            <p className="text-sm text-gray-600 ">{employee.email}</p>
+            <p className="text-sm text-gray-600">{employee.age}</p>
+            <p></p>
+          </div>
+        </div>
+      )}
+      </Card>
+    </aside>        
+      {/* Main Content */}
+      <main className="w-full min-h-screen py-1 md:w-2/3 lg:w-3/4">
+        <div className="p-2 md:p-4">
+          <div className="w-full px-6 pb-8 mt-8 sm:max-w-xl sm:rounded-lg">
+            <h2 className="pl-6 text-2xl font-bold sm:text-xl">
+              Public Profile
+            </h2>
+            <div className="grid max-w-2xl mx-auto mt-8">
+              {employee && (
+                <div className="flex flex-col items-center space-y-5 sm:flex-row sm:space-y-0">
+                  <img
+                    className="object-cover w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
+                    src={newPhoto || employee.photo}
+                    alt="Bordered avatar"
+                  />
+                  <div className="flex flex-col  sm:ml-8">
+                    <Upload
+                      action="your_upload_endpoint"
+                      name="photo"
+                      onChange={handlePhotoChange}
+                      showUploadList={false}
+                      className=" px-7 text-base font-medium rounded-lg focus:outline-none focus:ring-4 focus:ring-indigo-200"
+                    >
+                      <Button
+                        icon={<UploadOutlined />}
+                        style={{
+                          border: "1px solid #202142",
+                          backgroundColor: "#202142",
+                          color: "#fff",
+                        }}
+                        className="w-full animate-bounce"
+                      >
+                        Change Photo
+                      </Button>
+                    </Upload>
+
+                    <button
+                      type="button"
+                      onClick={saveChanges}
+                      className="py-3.5 px-7 text-base font-medium text-indigo-100 focus:outline-none bg-[#202142] rounded-lg border border-indigo-200 hover:bg-indigo-900 focus:z-10 focus:ring-4 focus:ring-indigo-200 "
+                    >
+                      Save Photo
+                    </button>
+                  </div>
+                </div>
+              )}
+              {/* Profile Content */}
+              {employee && (
+                <div className="mt-8 sm:mt-14 text-[#202142]">
+                  <div className="flex flex-col items-center w-full mb-2 space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 sm:mb-6">
+                    <div className="w-full">
+                      <label
+                        htmlFor="first_name"
+                        className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
+                      >
+                        First Name
+                      </label>
+                      <input
+                        type="text"
+                        id="first_name"
+                        className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                        placeholder="Your first name"
+                        value={employee.name}
+                        required
+                        readOnly
+                      />
+                    </div>
+                    <div className="w-full">
+                      <label
+                        htmlFor="last_name"
+                        className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
+                      >
+                        Last Name
+                      </label>
+                      <input
+                        type="text"
+                        id="last_name"
+                        className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                        placeholder="Your last name"
+                        value={employee.lastName}
+                        required
+                        readOnly
+                      />
+                    </div>
+                  </div>
+                  <div className="mb-2 sm:mb-6">
+                    <label
+                      htmlFor="email"
+                      className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
+                    >
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                      placeholder="Your email"
+                      value={employee.email}
+                      required
+                      readOnly
+                    />
+                  </div>
+                  <div className="mb-2 sm:mb-6">
+                    <label
+                      htmlFor="position"
+                      className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
+                    >
+                      Position
+                    </label>
+                    <input
+                      type="text"
+                      id="position"
+                      className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                      placeholder="Your position"
+                      value={employee.position}
+                      required
+                      readOnly
+                    />
+                  </div>
+                  <div className="mb-2 sm:mb-6">
+                    <label
+                      htmlFor="birthdate"
+                      className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
+                    >
+                      Birthdate
+                    </label>
+                    <input
+                      type="text"
+                      id="birthdate"
+                      className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                      placeholder="Your birthdate"
+                      value={employee.birthdate}
+                      required
+                      readOnly
+                    />
+                  </div>
+                  <div className="mb-2 sm:mb-6">
+                    <label
+                      htmlFor="age"
+                      className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
+                    >
+                      Age
+                    </label>
+                    <input
+                      type="text"
+                      id="age"
+                      className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                      placeholder="Your age"
+                      value={employee.age}
+                      required
+                      readOnly
+                    />
+                  </div>
+                  <div className="mb-2 sm:mb-6">
+                    <label
+                      htmlFor="companyId"
+                      className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
+                    >
+                      Company ID
+                    </label>
+                    <input
+                      type="text"
+                      id="companyId"
+                      className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                      placeholder="Your company ID"
+                      value={employee.companyId}
+                      required
+                      readOnly
+                    />
+                  </div>
+                  <div className="mb-2 sm:mb-6">
+                    <label
+                      htmlFor="dateOfJoining"
+                      className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
+                    >
+                      Date of Joining
+                    </label>
+                    <input
+                      type="text"
+                      id="dateOfJoining"
+                      className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                      placeholder="Your date of joining"
+                      value={employee.dateOfJoining}
+                      required
+                      readOnly
+                    />
+                  </div>
+                  <div className="mb-2 sm:mb-6">
+                    <label
+                      htmlFor="department"
+                      className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
+                    >
+                      Department
+                    </label>
+                    <input
+                      type="text"
+                      id="department"
+                      className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                      placeholder="Your department"
+                      value={employee.department}
+                      required
+                      readOnly
+                    />
+                  </div>
+                  {/* <div className="mb-2 sm:mb-6">
+                                        <label htmlFor="password" className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">Password</label>
+                                        <input type="password" id="password" className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 " placeholder="Your password" value={employee.password} required readOnly />
+                                    </div> */}
+                  <div className="mb-6">
+                    <label
+                      htmlFor="address"
+                      className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white"
+                    >
+                      Address
+                    </label>
+                    <textarea
+                      id="address"
+                      rows={4}
+                      className="block p-2.5 w-full text-sm text-indigo-900 bg-indigo-50 rounded-lg border border-indigo-300 focus:ring-indigo-500 focus:border-indigo-500 "
+                      placeholder="Your address"
+                      value={employee.address}
+                      required
+                      readOnly
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="text-white bg-indigo-700  hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
+                    >
+                      Save
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+      </main>
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick pauseOnHover draggable />
+
+    </div>
+  );
+};
+
+export default qwerty;

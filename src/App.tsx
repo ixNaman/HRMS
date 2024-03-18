@@ -17,7 +17,7 @@ import EmployeeAttendance from "./Components/Employee/EmployeeAttendance";
 import LeaveForm from "./Components/Employee/Leave";
 import EmployeeTasks from "./Components/Employee/EmployeeTasks";
 import LeaveManagement from "./Components/Admin/LeaveManagement";
-import EmployeeProfile from "./Components/Employee/EmployeeProfile";
+import Profile from "./Components/Employee/Profile";
 
 function App() {
   const isAuthenticated = useSelector(
@@ -62,7 +62,7 @@ function App() {
                       path="/LeaveManagement"
                       element={<LeaveManagement />}
                     />
-                    <Route path="/AdminProfile" element={<AdminProfile />} />
+                    <Route path="/Profile" element={<Profile />} />
                     <Route
                       path="/ProjectManagement"
                       element={<ProjectManagement />}
@@ -90,8 +90,8 @@ function App() {
                       element={<EmployeeAttendance />}
                     />
                      <Route
-                      path="/EmployeeProfile"
-                      element={<EmployeeProfile />}
+                      path="/Profile"
+                      element={<Profile />}
                     />
                     <Route
                     path="/EmployeeTasks" element={<EmployeeTasks/>}/>

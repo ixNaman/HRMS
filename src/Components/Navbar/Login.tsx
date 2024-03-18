@@ -5,7 +5,6 @@ import Innovatech_bg from "./qwerty.png";
 import { useDispatch } from "react-redux";
 import { login } from "../../Actions/authActions";
 import Innovatechs from "./Innovatechs.png";
-import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 
@@ -113,7 +112,6 @@ const Login: React.FC = () => {
 
           <Form.Item
             name="password"
-            // className='flex justify-center '
             rules={[{ required: true, message: "Please input your password!" }]}
           >
             <Input.Password

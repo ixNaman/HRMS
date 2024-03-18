@@ -16,7 +16,7 @@ interface NavigationItem {
 
 const navigation: NavigationItem[] = [
   { name: "Dashboard", href: "/Dashboard", current: true },
-  { name: "Team", href: "/EmployeeProfile", current: false },
+  { name: "Team", href: "/team", current: false },
   { name: "Projects", href: "/ProjectManagement", current: false },
   { name: "Calendar", href: "/CalendarEvents", current: false },
 ];
@@ -27,9 +27,7 @@ function classNames(...classes: (string | boolean)[]): string {
 
 export default function Example() {
   const dispatch = useDispatch();
-  const userRole = useSelector(
-    (state: { auth: AuthState }) => state.auth.role
-  );
+  const userRole = useSelector((state: { auth: AuthState }) => state.auth.role);
 
   const handleLogout = () => {
     // Perform any logout-related tasks here
@@ -58,39 +56,45 @@ export default function Example() {
                 </Disclosure.Button>
               </div>
               <div className="flex flex-shrink-0 items-center">
-                  <img
-                    className="h-8 w-auto"
-                    src={Innovatech}
-                    alt="Your Company"
-                  />
-                </div>
+                <img
+                  className="h-8 w-auto"
+                  src={Innovatech}
+                  alt="Your Company"
+                />
+              </div>
               <div className="flex space-x-4">
-            {navigation.map((item) => (
-              // Check the user role and conditionally render menu items
-              item.name === "Team" && userRole !== "Employee" ? null : (
-                <Link
-                  key={item.name}
-                  to={item.name === "Dashboard" ? `/${userRole}Dashboard` : item.href}
-                  className={classNames(
-                    item.current
-                      ? "bg-gray-900 text-white"
-                      : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                    "rounded-md px-3 py-2 text-sm font-medium"
-                  )}
-                  aria-current={item.current ? "page" : undefined}
-                >
-                  {item.name}
-                </Link>
-              )
-            ))}
-          </div>
+                {navigation.map((item) =>
+                  // Check the user role and conditionally render menu items
+                  item.name === "Team" && userRole !== "Employee" ? null : (
+                    <Link
+                      key={item.name}
+                      to={
+                        item.name === "Dashboard"
+                          ? `/${userRole}Dashboard`
+                          : item.href
+                      }
+                      className={classNames(
+                        item.current
+                          ? "bg-gray-900 text-white"
+                          : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                        "rounded-md px-3 py-2 text-sm font-medium"
+                      )}
+                      aria-current={item.current ? "page" : undefined}
+                    >
+                      {item.name}
+                    </Link>
+                  )
+                )}
+              </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <button
                   type="button"
                   className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
                   <span className="absolute -inset-1.5" />
-                  <span className="sr-only border-2 border-red-600">View notifications</span>
+                  <span className="sr-only border-2 border-red-600">
+                    View notifications
+                  </span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
 
@@ -116,7 +120,11 @@ export default function Example() {
                       <Menu.Item>
                         {({ active }: { active: boolean }) => (
                           <Link
-                            to="/AdminProfile"
+                            to={
+                           
+                                 "/Profile"
+                               
+                            } // Adjusted here
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"
